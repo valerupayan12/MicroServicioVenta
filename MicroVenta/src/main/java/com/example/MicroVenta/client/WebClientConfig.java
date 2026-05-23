@@ -3,7 +3,7 @@ package com.example.MicroVenta.client;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Base64;
 
@@ -18,6 +18,8 @@ import java.util.Base64;
 @Configuration
 public class WebClientConfig {
 
+    private static final String WebClient = null;
+
     @Value("${ms.genero.url}")
     private String generoUrl;
 
@@ -28,7 +30,7 @@ public class WebClientConfig {
     private String generoPassword;
 
     @Bean
-    public WebClient generoWebClient() {
+    public WebClientConfig generoWebClient() {
         // Construimos el header Basic Auth manualmente:
         // Base64(usuario:contraseña)
         String credenciales = generoUser + ":" + generoPassword;
