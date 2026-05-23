@@ -1,8 +1,10 @@
 package com.example.MicroVenta.client;
 
+import feign.auth.BasicAuthRequestInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 
 /**
  * Configuración del FeignClient.
@@ -23,8 +25,8 @@ public class FeignClientConfig {
     private String generoPassword;
 
     @Bean
-    public BasicAuthRequestInterceptor basicAuthRequestInterceptor() {
-        return new BasicAuthRequestInterceptor(generoUser, generoPassword);
+    public BasicAuthenticationInterceptor basicAuthRequestInterceptor() {
+        return new BasicAuthenticationInterceptor(generoUser, generoPassword);
     }
 
 }

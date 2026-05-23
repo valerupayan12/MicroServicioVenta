@@ -58,9 +58,9 @@ public class BoletaDTO {
     /**
      * La respuesta incluye el GeneroDTO completo obtenido desde ms-genero via Feign.
      */
-    //@Data
+    @Data
     @NoArgsConstructor
-    //@AllArgsConstructor
+    @AllArgsConstructor
     public static class Response {
 
         private int id_Boleta;
