@@ -10,10 +10,10 @@ import com.example.MicroVenta.model.Boleta;
 
 @Repository
 public interface BoletaRepository extends JpaRepository<Boleta, Integer>{
+
     @Query("SELECT b FROM Boleta b")
     List<Boleta> obtenerBoletas();
 
-    @Query("SELECT b FROM Boleta b WHERE b.id_boleta = :id_boleta")
-    Boleta buscarBoleta(int id_boleta);
-
+    @Query("SELECT b FROM Boleta b WHERE b.id_cliente = :id_cliente")
+    Boleta buscarBoleta(int id_cliente);
 }

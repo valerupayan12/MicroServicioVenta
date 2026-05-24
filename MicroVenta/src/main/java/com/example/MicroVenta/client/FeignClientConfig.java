@@ -1,32 +1,13 @@
 package com.example.MicroVenta.client;
 
-import feign.auth.BasicAuthRequestInterceptor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.support.BasicAuthenticationInterceptor;
-
 /**
- * Configuración del FeignClient.
+ * FeignClientConfig ya no se usa.
+ * La autenticación Basic Auth hacia ms-genero se configura
+ * directamente en WebClientConfig mediante el header Authorization.
  *
- * BasicAuthRequestInterceptor agrega automáticamente el header:
- *   Authorization: Basic <base64(user:password)>
- * en cada petición que hace Feign hacia ms-genero.
- *
- * Los valores se leen desde application.properties para no hardcodear credenciales.
+ * Si en el futuro se agrega OpenFeign al pom.xml, esta clase
+ * puede reactivarse con BasicAuthRequestInterceptor de feign.auth.
  */
-@Configuration
 public class FeignClientConfig {
-
-    @Value("${ms.genero.user}")
-    private String generoUser;
-
-    @Value("${ms.genero.password}")
-    private String generoPassword;
-
-    @Bean
-    public BasicAuthenticationInterceptor basicAuthRequestInterceptor() {
-        return new BasicAuthenticationInterceptor(generoUser, generoPassword);
-    }
-
+    // Vacía intencionalmente - ver WebClientConfig.java
 }

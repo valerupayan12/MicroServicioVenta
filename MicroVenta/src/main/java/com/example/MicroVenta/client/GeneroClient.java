@@ -1,33 +1,33 @@
 package com.example.MicroVenta.client;
 
-import com.example.MicroCliente.dto.GeneroDTO;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import com.example.MicroVenta.dto.GeneroDTO;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
 
 /**
- * FeignClient: interfaz que actúa como cliente HTTP hacia ms-genero.
+ * Cliente HTTP para consumir ms-genero usando WebClient.
  *
- * Spring genera automáticamente la implementación en tiempo de ejecución.
- * Solo definimos los métodos que necesitamos consumir del otro microservicio.
- *
- * name       → nombre lógico del cliente (identificador interno)
- * url        → leída desde application.properties (ms.genero.url)
- * configuration → clase que inyecta las credenciales Basic Auth en cada petición
+ * Usa el bean WebClient configurado en WebClientConfig y realiza
+ * llamadas síncronas mediante block().
  */
-@FeignClient(
-    name = "ms-genero",
-    url = "${ms.genero.url}",
-    configuration = FeignClientConfig.class
-)
-public interface GeneroClient {
+@Component
+public class GeneroClient {
+
+    private final WebClient webClient;
+
+    public GeneroClient(WebClient webClient) {
+        this.webClient = webClient;
+    }
 
     /**
-     * Llama a GET http://localhost:8081/api/generos/{id}
-     * Si el género no existe, Feign lanza FeignException que manejamos en el servicio.
+     * Llama a GET {ms.genero.url}/api/generos/{id}
      */
-    @GetMapping("/api/generos/{id}")
-    GeneroDTO buscarPorId(@PathVariable("id") Long id);
-
-
+    public GeneroDTO buscarPorId(Long id) {
+        return webClient
+                .get()
+                .uri(uriBuilder -> uriBuilder.path("/api/generos/{id}").build(id))
+                .retrieve()
+                .bodyToMono(GeneroDTO.class)
+                .block();
+    }
 }

@@ -18,8 +18,6 @@ import java.util.Base64;
 @Configuration
 public class WebClientConfig {
 
-    private static final String WebClient = null;
-
     @Value("${ms.genero.url}")
     private String generoUrl;
 
@@ -30,17 +28,13 @@ public class WebClientConfig {
     private String generoPassword;
 
     @Bean
-    public WebClientConfig generoWebClient() {
-        // Construimos el header Basic Auth manualmente:
-        // Base64(usuario:contraseña)
+    public WebClient generoWebClient() {
         String credenciales = generoUser + ":" + generoPassword;
         String basicAuth = "Basic " + Base64.getEncoder().encodeToString(credenciales.getBytes());
 
         return WebClient.builder()
                 .baseUrl(generoUrl)
-                // defaultHeader: se envia en TODAS las peticiones de este WebClient
                 .defaultHeader("Authorization", basicAuth)
                 .build();
     }
-
 }
