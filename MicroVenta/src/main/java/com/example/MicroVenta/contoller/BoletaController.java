@@ -42,8 +42,8 @@ public class BoletaController {
     }
     
     @PutMapping("{id_boleta}")
-    public int actualizarBoleta(@PathVariable int id_boleta, @Valid @RequestBody Boleta boleta) {
-        return boletaService.updateBoleta(boleta);
+    public int actualizarBoleta(@PathVariable int id_boleta, @Valid @RequestBody int boleta) {
+        return boletaService.deleteBoleta(boleta);
     }
     
     @DeleteMapping("{id_boleta}")

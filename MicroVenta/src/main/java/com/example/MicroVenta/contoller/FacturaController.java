@@ -31,23 +31,23 @@ public class FacturaController {
 
     //agregar
     @PostMapping
-    public Factura agregarFactura(@Valid @RequestBody Factura factura){
+    public int agregarFactura(@Valid @RequestBody Factura factura){
         return facturaService.saveFactura(factura);
      }
     //buscar
      @GetMapping("/{id_factura}")
      public Factura buscarFactura(@PathVariable int id_factura){
-        return facturaService.getFactura(id_factura);
+        return  facturaService.getFactura(id_factura);
      }
     //actualizar
     @PutMapping("/{id_factura}")
     public int actualizarFactura(@PathVariable int id_factura, @Valid @RequestBody Factura factura){
-        return facturaService.updateFactura(factura);
+        return facturaService.saveFactura(factura);
      }
     //eliminar
     @DeleteMapping("/{id_factura}")
     public String eliminarFactura(@PathVariable int id_factura){
-        if (facturaService.deleteFactura(id_factura)== 1) {
+        if ((facturaService).deleteFactura(id_factura)== 1) {
             return "Factura eliminada correctamente";
         }
         return "Error al eliminar la factura";

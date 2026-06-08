@@ -30,23 +30,23 @@ public class PedidoController {
     }
     //agregar
     @PostMapping
-    public Pedido agregarPedido(@Valid @RequestBody Pedido pedido){
+    public int agregarPedido(@Valid @RequestBody int pedido){
         return pedidoService.savePedido(pedido);
      }
     //buscar
     @GetMapping("/{id_pedido}")
-    public Pedido buscarPedido(@PathVariable int id_pedido){
-        return pedidoService.getPedido(id_pedido);
+    public int buscarPedido(@PathVariable int id_pedido){
+        return pedidoService.savePedido(id_pedido);
     }
     //actualizar
     @PutMapping("/{id_pedido}")
-    public int actualizarPedido(@PathVariable int id_pedido, @Valid @RequestBody Pedido pedido){
-        return pedidoService.updatePedido(pedido);
+    public int actualizarPedido(@PathVariable int id_pedido, @Valid @RequestBody int pedido){
+        return (int) ( pedidoService).savePedido(pedido);
     }
     //eliminar
     @DeleteMapping("/{id_pedido}")
     public String eliminarPedido(@PathVariable int id_pedido){
-        if (pedidoService.deletePedido(id_pedido)== 1) {
+        if (pedidoService.savePedido(id_pedido)== 1) {
             return "Pedido eliminado correctamente";
         }
         return "Error al eliminar el pedido";

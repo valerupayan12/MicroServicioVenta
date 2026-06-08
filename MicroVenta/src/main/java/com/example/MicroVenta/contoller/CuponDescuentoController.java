@@ -41,11 +41,11 @@ public class CuponDescuentoController {
 
     // actualizar
     @PutMapping("{id_cupon_descuento}")
-    public int actualizarCuponDescuento(
+    public CuponDescuento actualizarCuponDescuento(
             @PathVariable int id_cupon_descuento,
             @Valid @RequestBody CuponDescuento cuponDescuento) {
 
-        return cuponDescuentoService.updateCuponDescuento(cuponDescuento);
+        return cuponDescuentoService.saveCuponDescuento(cuponDescuento);
     }
 
     // eliminar

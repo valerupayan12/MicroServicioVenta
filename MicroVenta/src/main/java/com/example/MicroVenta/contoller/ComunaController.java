@@ -41,13 +41,13 @@ public class ComunaController {
     }
     //actualizar
     @PutMapping("{id_comuna}")
-    public int actualizarComuna(@PathVariable int id_comuna, @Valid @RequestBody Comuna comuna){
+    public int actualizarComuna(@PathVariable int id_comuna, @Valid @RequestBody int comuna){
         return comunaService.updateComuna(comuna);
     }
     //eliminar
     @DeleteMapping("{id_comuna}")
     public String eliminarComuna(@PathVariable int id_comuna){
-        if (comunaService.deleteComuna(id_comuna)==1){
+        if (comunaService.updateComuna(id_comuna)==1){
             return "comuna eliminada correctamente";
         }
         return "Error al eliminar la comuna";

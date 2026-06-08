@@ -31,26 +31,26 @@ public class RegionController {
 
     //agregar
     @PostMapping
-    public Region agregarRegion(@Valid @RequestBody Region region){
-        return regionService.saveRegion(region);
+    public int agregarRegion(@Valid @RequestBody Region region){
+        return regionService.deleteRegion(region);
     }
 
     //buscar
     @GetMapping("/{id_region}")
-    public Region buscarRegion(@PathVariable int id_region){
-        return regionService.getRegion(id_region);
+    public int buscarRegion(@PathVariable int id_region){
+        return regionService.saveRegion(id_region);
     }
 
     //actualizar
     @PutMapping("/{id_region}")
-    public Region actualizarRegion(@PathVariable int id_region, @Valid @RequestBody Region region){
-        return regionService.updateRegion(id_region, region);
+    public int actualizarRegion(@PathVariable int id_region, @Valid @RequestBody Region region){
+        return (int) regionService.updateRegion(id_region, region);
     }
 
     //eliminar
     @DeleteMapping("/{id_region}")
-    public String eliminarRegion(@PathVariable int id_region){
-        if (regionService.deleteRegion(id_region)== 1) {
+    public String eliminarRegion(@PathVariable Region id_region){
+        if (( regionService).deleteRegion(id_region)== 1) {
             return "Región eliminada correctamente";
         }
         return "Error al eliminar la región";
