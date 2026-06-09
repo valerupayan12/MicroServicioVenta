@@ -19,5 +19,9 @@ public class Comuna {
     private int id_comuna;
     @Column(name="nombre", nullable =false)
     private String nombre;
+    public int getId() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getId'");
+    }
 
 }

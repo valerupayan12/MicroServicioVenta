@@ -33,5 +33,17 @@ public class Venta {
     private int total_neto;
     private int descuento_aplicado;
     private String tipo_documento;
+    public void setNombre(Object nombre) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setNombre'");
+    }
+    public Object getNombre() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getNombre'");
+    }
+    public Object getId() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getId'");
+    }
 
 }

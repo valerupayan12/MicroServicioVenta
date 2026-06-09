@@ -32,5 +32,9 @@ public class Cliente {
     @ManyToOne
     @JoinColumn(name="id_genero", nullable=false)
     private Genero genero;
+    public int getId() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getId'");
+    }
 
 }

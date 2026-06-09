@@ -28,11 +28,23 @@ public class ClienteDTO {
 
         @NotNull(message = "El ID del género es obligatorio")
         private Long generoId;
+
+        public Integer getId_comuna() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getId_comuna'");
+        }
+
+        public String getTelefono() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getTelefono'");
+        }
+
+        public String getDireccion_envio() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getDireccion_envio'");
+        }
     }
 
-    /**
-     * La respuesta incluye el GeneroDTO completo obtenido desde ms-genero via Feign.
-     */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
