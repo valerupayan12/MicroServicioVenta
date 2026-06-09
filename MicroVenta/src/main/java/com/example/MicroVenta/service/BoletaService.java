@@ -1,13 +1,18 @@
 package com.example.MicroVenta.service;
 
 import java.util.List;
+<<<<<<< Updated upstream
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+=======
+import com.example.MicroVenta.dto.BoletaDTO;
+>>>>>>> Stashed changes
 import com.example.MicroVenta.model.Boleta;
 import com.example.MicroVenta.repository.BoletaRepository;
 
+<<<<<<< Updated upstream
 import jakarta.transaction.Transactional;
 
 @Service
@@ -45,5 +50,7 @@ public class BoletaService {
         return 1;
     }
 
+=======
+>>>>>>> Stashed changes
 
 }

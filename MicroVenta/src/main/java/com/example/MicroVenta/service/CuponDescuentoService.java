@@ -1,13 +1,17 @@
 package com.example.MicroVenta.service;
 
 import java.util.List;
+<<<<<<< Updated upstream
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+=======
+>>>>>>> Stashed changes
 import com.example.MicroVenta.model.CuponDescuento;
 import com.example.MicroVenta.repository.CuponDescuentoRepository;
 
+<<<<<<< Updated upstream
 import jakarta.transaction.Transactional;
 
 @Service
@@ -57,5 +61,18 @@ public class CuponDescuentoService {
 
         return 1;
     }
+=======
+public interface CuponDescuentoService {
+    List<CuponDescuento> listarTodos();
+    CuponDescuento buscarPorId(int id);
+    CuponDescuento crear(CuponDescuento request);
+    CuponDescuento actualizar(int id, CuponDescuento request);
+    void eliminar(int id);
+    List<CuponDescuento> getAllCupones();
+    CuponDescuento saveCuponDescuento(CuponDescuento cuponDescuento);
+    CuponDescuento getCuponDescuentoById(int id_cupon_descuento);
+    CuponDescuento saveCuponDescuento(int id_cupon_descuento);
+    int deleteCuponDescuento(int id_cupon_descuento);
+>>>>>>> Stashed changes
 
 }

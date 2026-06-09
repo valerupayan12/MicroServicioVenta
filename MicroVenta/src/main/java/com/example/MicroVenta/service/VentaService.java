@@ -1,5 +1,6 @@
 package com.example.MicroVenta.service;
 
+<<<<<<< Updated upstream
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,4 +43,16 @@ public class VentaService {
         return 1;
     }
 
+=======
+
+import com.example.MicroVenta.dto.VentaDTO;
+import java.util.List;
+
+public interface VentaService {
+    List<VentaDTO.Response> listarTodos();
+    VentaDTO.Response buscarPorId(Long id);
+    VentaDTO.Response crear(VentaDTO.Request request);
+    VentaDTO.Response actualizar(Long id, VentaDTO.Request request);
+    void eliminar(Long id);
+>>>>>>> Stashed changes
 }

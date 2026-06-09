@@ -1,15 +1,30 @@
 package com.example.MicroVenta.service;
 
 import java.util.List;
+<<<<<<< Updated upstream
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+=======
+>>>>>>> Stashed changes
 import com.example.MicroVenta.model.Region;
 import com.example.MicroVenta.repository.RegionRepository;
 
+<<<<<<< Updated upstream
 import jakarta.transaction.Transactional;
 
+=======
+public interface RegionService {
+    List<Region> listarTodos();
+    Region buscarPorId(int id);
+    Region crear(Region request);
+    Region actualizar(int id, Region request);
+    void eliminar(int id);
+    List<Region> getRegiones();
+    int saveRegion1(int id_region);
+    Region saveRegion(int id_region);
+>>>>>>> Stashed changes
 
 @Service
 @Transactional

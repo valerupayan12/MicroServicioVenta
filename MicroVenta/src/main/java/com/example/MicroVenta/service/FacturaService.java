@@ -1,10 +1,13 @@
 package com.example.MicroVenta.service;
 
 import java.util.List;
+<<<<<<< Updated upstream
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+=======
+>>>>>>> Stashed changes
 import com.example.MicroVenta.model.Factura;
 import com.example.MicroVenta.repository.FacturaRepository;
 
@@ -47,5 +50,18 @@ public class FacturaService {
         return 1;
     }
 
+<<<<<<< Updated upstream
 
+=======
+public interface FacturaService {
+    List<Factura> listarTodos();
+    Factura buscarPorId(int id);
+    Factura crear(Factura request);
+    Factura actualizar(int id, Factura request);
+    void eliminar(int id);
+    List<Factura> getFacturas();
+    int saveFactura(Factura factura);
+    Factura getFactura(int id_factura);
+    int deleteFactura(int id_factura);
+>>>>>>> Stashed changes
 }

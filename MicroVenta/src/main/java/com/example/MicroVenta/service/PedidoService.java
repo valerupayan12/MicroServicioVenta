@@ -1,13 +1,17 @@
 package com.example.MicroVenta.service;
 
 import java.util.List;
+<<<<<<< Updated upstream
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+=======
+>>>>>>> Stashed changes
 import com.example.MicroVenta.model.Pedido;
 import com.example.MicroVenta.repository.PedidoRepository;
 
+<<<<<<< Updated upstream
 import jakarta.transaction.Transactional;
 
 
@@ -43,5 +47,16 @@ public class PedidoService {
         pedidoRepository.save(pedido);
         return 1;
     }
+=======
+public interface PedidoService {
+    List<Pedido> listarTodos();
+    Pedido buscarPorId(int id);
+    Pedido crear(Pedido request);
+    Pedido actualizar(int id, Pedido request);
+    void eliminar(int id);
+    List<Pedido> getPedidos();
+    Pedido savePedido(Pedido pedido);
+    int savePedido(int id_pedido);
+>>>>>>> Stashed changes
 
 }
