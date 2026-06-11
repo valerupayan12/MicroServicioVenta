@@ -7,9 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.MicroVenta.dto.ClienteDTO;
 import com.example.MicroVenta.model.Cliente;
-import com.example.MicroVenta.model.Comuna;
 import com.example.MicroVenta.repository.ClienteRepository;
-import com.example.MicroVenta.repository.ComunaRepository;
 import com.example.MicroVenta.service.ClienteService;
 
 import java.util.List;
@@ -21,7 +19,6 @@ import java.util.stream.Collectors;
 public class BoletaServiceimpl implements ClienteService {
 
     private final ClienteRepository clienteRepository;
-    private final ComunaRepository comunaRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -42,14 +39,12 @@ public class BoletaServiceimpl implements ClienteService {
     public ClienteDTO.Response crear(ClienteDTO.Request request) {
         if (clienteRepository.existsByEmail(request.getEmail()))
             throw new RuntimeException("Ya existe un cliente con el email: " + request.getEmail());
-        Comuna comuna = comunaRepository.findById(request.getId_comuna())
-                .orElseThrow(() -> new RuntimeException("Comuna no encontrada con id: " + request.getId_comuna()));
         Cliente c = new Cliente();
         c.setNombre(request.getNombre());
         c.setEmail(request.getEmail());
         c.setTelefono(request.getTelefono());
         c.setDireccion_envio(request.getDireccion_envio());
-        c.setComuna(comuna);
+        c.setComuna(request.getId_comuna());
         return mapToResponse(clienteRepository.save(c));
     }
 
@@ -58,13 +53,11 @@ public class BoletaServiceimpl implements ClienteService {
     public ClienteDTO.Response actualizar(int id, ClienteDTO.Request request) {
         Cliente c = clienteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado con id: " + id));
-        Comuna comuna = comunaRepository.findById(request.getId_comuna())
-                .orElseThrow(() -> new RuntimeException("Comuna no encontrada con id: " + request.getId_comuna()));
         c.setNombre(request.getNombre());
         c.setEmail(request.getEmail());
         c.setTelefono(request.getTelefono());
         c.setDireccion_envio(request.getDireccion_envio());
-        c.setComuna(comuna);
+        c.setComuna(request.getId_comuna());
         return mapToResponse(clienteRepository.save(c));
     }
 

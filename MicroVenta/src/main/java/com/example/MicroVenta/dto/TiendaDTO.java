@@ -1,8 +1,5 @@
 package com.example.MicroVenta.dto;
 
-import com.example.MicroVenta.model.Comuna;
-import com.example.MicroVenta.model.Region;
-
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +13,7 @@ public class TiendaDTO {
     public static class Request {
 
        @NotNull(message = "El ID de la tienda es obligatorio")
-        private int id_tienda;
+        private Integer id_tienda;
 
         @NotBlank(message = "El nombre es obligatorio")
         @Pattern(regexp = "^[\\w\\sáéíóúÁÉÍÓÚñÑ]{2,}\\s+[\\w\\sáéíóúÁÉÍÓÚñÑ]{2,}.*$",
@@ -28,21 +25,22 @@ public class TiendaDTO {
                  message = "La direccion debe contener al menos 2 palabras")
         private String direccion;
 
+        @NotNull(message = "El ID de la comuna es obligatorio")
+        private Integer id_comuna;
 
+        @NotNull(message = "El ID de la región es obligatorio")
+        private Integer id_region;
     }
 
-    /**
-     * La respuesta incluye el GeneroDTO completo obtenido desde ms-genero via Feign.
-     */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Response {
-        private int id_Tienda;
+        private Integer id_tienda;
         private String nombre;
         private String direccion;
-        private Comuna comuna;
-        private Region region;
+        private Integer id_comuna;
+        private Integer id_region;
     }
 
 }

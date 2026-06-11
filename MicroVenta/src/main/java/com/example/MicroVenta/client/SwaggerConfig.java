@@ -1,4 +1,4 @@
-package com.example.MicroVenta.segurity;
+package com.example.MicroVenta.client;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -6,17 +6,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 
+
 @Configuration
 public class SwaggerConfig {
-
     @Bean
     public OpenAPI customOpenAPI(){
         return new OpenAPI()
             .info(new Info()
-                    .title("API 2026 Productos")
+                    .title("API 2026 Ventas")
                     .version("1.0")
-                    .description("Documentacion de la API para registro productos"));
+                    .description("Documentacion de la API para Registro Ventas "));
                             
     }
-
 }

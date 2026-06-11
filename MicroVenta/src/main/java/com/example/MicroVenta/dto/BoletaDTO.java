@@ -63,16 +63,16 @@ public class BoletaDTO {
     @AllArgsConstructor
     public static class Response {
 
-        private int id_Boleta;
+        private Integer id_Boleta;
         private Venta venta;
         private String folio;
         private String timbre_electronico;
         private String nombre_receptor;
         private String ruta_receptor;
         private Date fecha_emision;
-        private int monto_neto;
-        private int monto_iva;
-        private int monto_total;
+        private Integer monto_neto;
+        private Integer monto_iva;
+        private Integer monto_total;
         private String email_envio;
         private Boolean anulada;
     }

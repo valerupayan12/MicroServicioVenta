@@ -33,13 +33,11 @@ public class Boleta {
     @Column(name = "telefono", nullable = false)
     private String telefono;
 
-    @ManyToOne
-    @JoinColumn(name = "id_comuna", nullable = false)
-    private Comuna comuna;
+    @Column(name = "id_comuna", nullable = false)
+    private int comuna;
 
     private String direccion_envio;
 
-    @ManyToOne
-    @JoinColumn(name = "id_genero", nullable = false)
-    private Genero genero;
+    @Column(name = "id_genero", nullable = false)
+    private int genero;
 }

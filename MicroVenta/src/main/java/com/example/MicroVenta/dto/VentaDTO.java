@@ -1,16 +1,33 @@
 package com.example.MicroVenta.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.sql.Date;
+
 public class VentaDTO {
 
-    public class Response {
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Response {
+        private int id_venta;
+        private Date fecha_venta;
+        private int total_neto;
     }
 
-    public class Request {
-
-        public Object getNombre() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'getNombre'");
-        }
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Request {
+        private Integer id_pedido;
+        private Integer id_tienda;
+        private Integer id_cliente;
+        private Date fecha_venta;
+        private int total_neto;
+        private int descuento_aplicado;
+        private String tipo_documento;
     }
 
 }

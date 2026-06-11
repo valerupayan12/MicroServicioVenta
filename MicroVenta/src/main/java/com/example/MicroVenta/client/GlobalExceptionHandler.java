@@ -1,4 +1,4 @@
-package com.example.MicroVenta.segurity;
+package com.example.MicroVenta.client;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,14 +23,12 @@ public class GlobalExceptionHandler {
             String campo = ((FieldError) error).getField();
             errores.put(campo, error.getDefaultMessage());
         });
-
         Map<String, Object> respuesta = new HashMap<>();
         respuesta.put("timestamp", LocalDateTime.now().toString());
         respuesta.put("status", 400);
         respuesta.put("error", "Errores de validación");
         respuesta.put("campos", errores);
-
-        log.warn("[ms-producto] Error de validación: {}", errores);
+        log.warn("[ms-envio] Error de validación: {}", errores);
         return ResponseEntity.badRequest().body(respuesta);
     }
 
@@ -40,9 +38,7 @@ public class GlobalExceptionHandler {
         respuesta.put("timestamp", LocalDateTime.now().toString());
         respuesta.put("status", 404);
         respuesta.put("error", ex.getMessage());
-
-        log.error("[ms-producto] Error: {}", ex.getMessage());
+        log.error("[ms-envio] Error: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
     }
-
 }
