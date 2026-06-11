@@ -36,12 +36,12 @@ public class CuponDescuentoDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Response {
-        private int id_cupon_descuento;
-        private int codigo;
-        private int descuento_pct;
-        private int descuento_monto;
-        private Data fecha_expiracion;
-        private boolean activo;
+        private Integer id_cupon_descuento;
+        private Integer codigo;
+        private Integer descuento_pct;
+        private Integer descuento_monto;
+        private String fecha_expiracion;
+        private Boolean activo;
         
     }
 

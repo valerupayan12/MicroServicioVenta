@@ -6,10 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.MicroVenta.dto.ClienteDTO;
-import com.example.MicroVenta.dto.ClienteDTO.Response;
 import com.example.MicroVenta.dto.VentaDTO;
-import com.example.MicroVenta.model.Cliente;
+import com.example.MicroVenta.dto.VentaDTO.Response;
 import com.example.MicroVenta.model.Venta;
 import com.example.MicroVenta.repository.VentaRepository;
 import com.example.MicroVenta.service.VentaService;
@@ -26,14 +24,14 @@ public class VentaServiceImpl implements VentaService {
 
     @Override
     @Transactional(readOnly = true)
-    public List listarTodos() {
+    public List<VentaDTO.Response> listarTodos() {
         log.info("[ms-envio] Listando ventas");
         return ventaRepository.findAll().stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Response buscarPorId(int id) {
+    public VentaDTO.Response buscarPorId(int id) {
         log.info("[ms-envio] Buscando venta id: {}", id);
         Venta c = ventaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Venta no encontrada con id: " + id));
@@ -42,20 +40,26 @@ public class VentaServiceImpl implements VentaService {
 
     @Override
     @Transactional
-    public Response crear(VentaDTO.Request request) {
-        log.info("[ms-envio] Creando venta: {}", request.getNombre());
+    public VentaDTO.Response crear(VentaDTO.Request request) {
+        log.info("[ms-envio] Creando venta");
         Venta c = new Venta();
-        c.setNombre(request.getNombre());
+        c.setFecha_venta(request.getFecha_venta());
+        c.setTotal_neto(request.getTotal_neto());
+        c.setDescuento_aplicado(request.getDescuento_aplicado());
+        c.setTipo_documento(request.getTipo_documento());
         return mapToResponse(ventaRepository.save(c));
     }
 
     @Override
     @Transactional
-    public Response actualizar(int id, VentaDTO.Request request) {
+    public VentaDTO.Response actualizar(int id, VentaDTO.Request request) {
         log.info("[ms-envio] Actualizando venta id: {}", id);
         Venta c = ventaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Venta no encontrada con id: " + id));
-        c.setNombre(request.getNombre());
+        c.setFecha_venta(request.getFecha_venta());
+        c.setTotal_neto(request.getTotal_neto());
+        c.setDescuento_aplicado(request.getDescuento_aplicado());
+        c.setTipo_documento(request.getTipo_documento());
         return mapToResponse(ventaRepository.save(c));
     }
 
@@ -68,7 +72,7 @@ public class VentaServiceImpl implements VentaService {
         ventaRepository.deleteById(id);
     }
 
-    private ClienteDTO.Response mapToResponse(Venta c) {
-        return new ClienteDTO.Response();
+    private VentaDTO.Response mapToResponse(Venta c) {
+        return new VentaDTO.Response(c.getId_venta(), c.getFecha_venta(), c.getTotal_neto());
     }
 }

@@ -60,7 +60,7 @@ public class FacturaDTO {
     @AllArgsConstructor
     public static class Response {
 
-        private int id_factura;
+        private Integer id_factura;
         private Venta venta;
         private String folio;
         private String timbre_electronico;
@@ -69,8 +69,8 @@ public class FacturaDTO {
         private String dvrun_cliente;
         private String giro;
         private Date fecha_emision;
-        private int monto_iva;
-        private int monto_total;
+        private Integer monto_iva;
+        private Integer monto_total;
         private String email_envio;
         private Boolean anulada;
     }

@@ -27,7 +27,7 @@ public class PedidoDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Response {
-        private int id_pedido;
+        private Integer id_pedido;
         private Cliente cliente;
         private Tienda tienda;
         private boolean estado;

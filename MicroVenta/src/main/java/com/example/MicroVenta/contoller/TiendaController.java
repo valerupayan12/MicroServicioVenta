@@ -19,37 +19,43 @@ import jakarta.validation.Valid;
 
 @SuppressWarnings("unused")
 @RestController
-@RequestMapping ("api/v2/tiendas")
+@RequestMapping("/api/v2/tiendas")
 public class TiendaController {
     @Autowired
     private TiendaService tiendaService;
-
+    
     @GetMapping
     public List<Tienda> listarTiendas(){
-        return tiendaService.getTiendas();
+        return tiendaService.listarTodos();
     }
-    //agregar
+    
+    // agregar
     @PostMapping
     public Tienda agregarTienda(@Valid @RequestBody Tienda tienda){
-        return tiendaService.saveTienda(tienda);
-     }
-    //buscar
-        @GetMapping("/{id_tienda}")
-        public Tienda buscarTienda(@PathVariable int id_tienda){
-            return tiendaService.getTienda(id_tienda);
-        }
-    //actualizar
+        return tiendaService.crear(tienda);
+    }
+    
+    // buscar
+    @GetMapping("/{id_tienda}")
+    public Tienda buscarTienda(@PathVariable int id_tienda){
+        return tiendaService.buscarPorId(id_tienda);
+    }
+    
+    // actualizar
     @PutMapping("/{id_tienda}")
     public Tienda actualizarTienda(@PathVariable int id_tienda, @Valid @RequestBody Tienda tienda){
-        return tiendaService.updateTienda(id_tienda, tienda);
+        return tiendaService.actualizar(id_tienda, tienda);
     }
-    //eliminar
+    
+    // eliminar
     @DeleteMapping("/{id_tienda}")
     public String eliminarTienda(@PathVariable int id_tienda){
-        if (tiendaService.deleteTienda(id_tienda) == 1) {
+        try {
+            tiendaService.eliminar(id_tienda);
             return "Tienda eliminada correctamente";
+        } catch (RuntimeException e) {
+            return "Error al eliminar la tienda";
         }
-        return "Error al eliminar la tienda";
     }
 
 }
