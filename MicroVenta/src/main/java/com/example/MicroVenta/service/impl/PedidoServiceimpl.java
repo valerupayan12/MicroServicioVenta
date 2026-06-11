@@ -5,72 +5,74 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.MicroVenta.dto.ClienteDTO;
-import com.example.MicroVenta.model.Cliente;
-import com.example.MicroVenta.repository.ClienteRepository;
-import com.example.MicroVenta.service.ClienteService;
+import com.example.MicroVenta.model.Pedido;
+import com.example.MicroVenta.repository.PedidoRepository;
+import com.example.MicroVenta.service.PedidoService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PedidoServiceimpl implements ClienteService {
+public class PedidoServiceimpl implements PedidoService {
 
-    private final ClienteRepository clienteRepository;
+    private final PedidoRepository pedidoRepository;
 
     @Override
     @Transactional(readOnly = true)
-    public List<ClienteDTO.Response> listarTodos() {
-        return clienteRepository.findAll().stream().map(this::mapToResponse).collect(Collectors.toList());
+    public List<Pedido> listarTodos() {
+        return pedidoRepository.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ClienteDTO.Response buscarPorId(int id) {
-        Cliente c = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado con id: " + id));
-        return mapToResponse(c);
+    public Pedido buscarPorId(int id) {
+        return pedidoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pedido no encontrado con id: " + id));
     }
 
     @Override
     @Transactional
-    public ClienteDTO.Response crear(ClienteDTO.Request request) {
-        if (clienteRepository.existsByEmail(request.getEmail()))
-            throw new RuntimeException("Ya existe un cliente con el email: " + request.getEmail());
-        Cliente c = new Cliente();
-        c.setNombre(request.getNombre());
-        c.setEmail(request.getEmail());
-        c.setTelefono(request.getTelefono());
-        c.setDireccion_envio(request.getDireccion_envio());
-        c.setComuna(request.getId_comuna());
-        return mapToResponse(clienteRepository.save(c));
+    public Pedido crear(Pedido request) {
+        return pedidoRepository.save(request);
     }
 
     @Override
     @Transactional
-    public ClienteDTO.Response actualizar(int id, ClienteDTO.Request request) {
-        Cliente c = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado con id: " + id));
-        c.setNombre(request.getNombre());
-        c.setEmail(request.getEmail());
-        c.setTelefono(request.getTelefono());
-        c.setDireccion_envio(request.getDireccion_envio());
-        c.setComuna(request.getId_comuna());
-        return mapToResponse(clienteRepository.save(c));
+    public Pedido actualizar(int id, Pedido request) {
+        Pedido pedido = pedidoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pedido no encontrado con id: " + id));
+        pedido.setCliente(request.getCliente());
+        pedido.setTienda(request.getTienda());
+        pedido.setFecha_pedido(request.getFecha_pedido());
+        pedido.setCupondescuento(request.getCupondescuento());
+        pedido.setEstado(request.isEstado());
+        return pedidoRepository.save(pedido);
     }
 
     @Override
     @Transactional
     public void eliminar(int id) {
-        if (!clienteRepository.existsById(id))
-            throw new RuntimeException("Cliente no encontrado con id: " + id);
-        clienteRepository.deleteById(id);
+        if (!pedidoRepository.existsById(id))
+            throw new RuntimeException("Pedido no encontrado con id: " + id);
+        pedidoRepository.deleteById(id);
     }
 
-    private ClienteDTO.Response mapToResponse(Cliente c) {
-        return new ClienteDTO.Response();
+    @Override
+    public List<Pedido> getPedidos() {
+        return pedidoRepository.findAll();
     }
 
+    @Override
+    public Pedido savePedido(Pedido pedido) {
+        return pedidoRepository.save(pedido);
+    }
+
+    @Override
+    public int savePedido(int id_pedido) {
+        if (!pedidoRepository.existsById(id_pedido)) {
+            throw new RuntimeException("Pedido no encontrado con id: " + id_pedido);
+        }
+        return id_pedido;
+    }
 }
