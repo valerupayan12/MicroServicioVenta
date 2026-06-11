@@ -5,71 +5,45 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.MicroVenta.dto.ClienteDTO;
-import com.example.MicroVenta.model.Cliente;
-import com.example.MicroVenta.repository.ClienteRepository;
-import com.example.MicroVenta.service.ClienteService;
+import com.example.MicroVenta.model.Boleta;
+import com.example.MicroVenta.repository.BoletaRepository;
+import com.example.MicroVenta.service.BoletaService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class BoletaServiceimpl implements ClienteService {
+public class BoletaServiceimpl implements BoletaService {
 
-    private final ClienteRepository clienteRepository;
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ClienteDTO.Response> listarTodos() {
-        return clienteRepository.findAll().stream().map(this::mapToResponse).collect(Collectors.toList());
-    }
+    private final BoletaRepository boletaRepository;
 
     @Override
     @Transactional(readOnly = true)
-    public ClienteDTO.Response buscarPorId(int id) {
-        Cliente c = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado con id: " + id));
-        return mapToResponse(c);
+    public List<Boleta> getBoletas() {
+        return boletaRepository.findAll();
     }
 
     @Override
     @Transactional
-    public ClienteDTO.Response crear(ClienteDTO.Request request) {
-        if (clienteRepository.existsByEmail(request.getEmail()))
-            throw new RuntimeException("Ya existe un cliente con el email: " + request.getEmail());
-        Cliente c = new Cliente();
-        c.setNombre(request.getNombre());
-        c.setEmail(request.getEmail());
-        c.setTelefono(request.getTelefono());
-        c.setDireccion_envio(request.getDireccion_envio());
-        c.setComuna(request.getId_comuna());
-        return mapToResponse(clienteRepository.save(c));
+    public Boleta saveBoletas(Boleta boleta) {
+        return boletaRepository.save(boleta);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Boleta getBoletaById(int id_boleta) {
+        return boletaRepository.findById(id_boleta)
+                .orElseThrow(() -> new RuntimeException("Boleta no encontrada con id: " + id_boleta));
     }
 
     @Override
     @Transactional
-    public ClienteDTO.Response actualizar(int id, ClienteDTO.Request request) {
-        Cliente c = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado con id: " + id));
-        c.setNombre(request.getNombre());
-        c.setEmail(request.getEmail());
-        c.setTelefono(request.getTelefono());
-        c.setDireccion_envio(request.getDireccion_envio());
-        c.setComuna(request.getId_comuna());
-        return mapToResponse(clienteRepository.save(c));
-    }
-
-    @Override
-    @Transactional
-    public void eliminar(int id) {
-        if (!clienteRepository.existsById(id))
-            throw new RuntimeException("Cliente no encontrado con id: " + id);
-        clienteRepository.deleteById(id);
-    }
-
-    private ClienteDTO.Response mapToResponse(Cliente c) {
-        return new ClienteDTO.Response();
+    public int deleteBoleta(int id_boleta) {
+        if (!boletaRepository.existsById(id_boleta)) {
+            return 0;
+        }
+        boletaRepository.deleteById(id_boleta);
+        return 1;
     }
 }

@@ -1,77 +1,91 @@
 package com.example.MicroVenta.service.impl;
 
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.MicroVenta.dto.ClienteDTO;
-import com.example.MicroVenta.model.Cliente;
-import com.example.MicroVenta.repository.ClienteRepository;
-import com.example.MicroVenta.service.ClienteService;
+import com.example.MicroVenta.model.Factura;
+import com.example.MicroVenta.repository.FacturaRepository;
+import com.example.MicroVenta.service.FacturaService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class FacturaServiceimpl  implements ClienteService {
+public class FacturaServiceimpl implements FacturaService {
 
-    private final ClienteRepository clienteRepository;
+    private final FacturaRepository facturaRepository;
 
     @Override
     @Transactional(readOnly = true)
-    public List<ClienteDTO.Response> listarTodos() {
-        return clienteRepository.findAll().stream().map(this::mapToResponse).collect(Collectors.toList());
+    public List<Factura> listarTodos() {
+        return facturaRepository.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ClienteDTO.Response buscarPorId(int id) {
-        Cliente c = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado con id: " + id));
-        return mapToResponse(c);
+    public Factura buscarPorId(int id) {
+        return facturaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Factura no encontrada con id: " + id));
     }
 
     @Override
     @Transactional
-    public ClienteDTO.Response crear(ClienteDTO.Request request) {
-        if (clienteRepository.existsByEmail(request.getEmail()))
-            throw new RuntimeException("Ya existe un cliente con el email: " + request.getEmail());
-        Cliente c = new Cliente();
-        c.setNombre(request.getNombre());
-        c.setEmail(request.getEmail());
-        c.setTelefono(request.getTelefono());
-        c.setDireccion_envio(request.getDireccion_envio());
-        c.setComuna(request.getId_comuna());
-        return mapToResponse(clienteRepository.save(c));
+    public Factura crear(Factura request) {
+        return facturaRepository.save(request);
     }
 
     @Override
     @Transactional
-    public ClienteDTO.Response actualizar(int id, ClienteDTO.Request request) {
-        Cliente c = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado con id: " + id));
-        c.setNombre(request.getNombre());
-        c.setEmail(request.getEmail());
-        c.setTelefono(request.getTelefono());
-        c.setDireccion_envio(request.getDireccion_envio());
-        c.setComuna(request.getId_comuna());
-        return mapToResponse(clienteRepository.save(c));
+    public Factura actualizar(int id, Factura request) {
+        Factura factura = facturaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Factura no encontrada con id: " + id));
+        factura.setVenta(request.getVenta());
+        factura.setFolio(request.getFolio());
+        factura.setTimbre_electronico(request.getTimbre_electronico());
+        factura.setRazon_social(request.getRazon_social());
+        factura.setNumrun_cliente(request.getNumrun_cliente());
+        factura.setDvrun_cliente(request.getDvrun_cliente());
+        factura.setGiro(request.getGiro());
+        factura.setFecha_emision(request.getFecha_emision());
+        factura.setMonto_iva(request.getMonto_iva());
+        factura.setMonto_total(request.getMonto_total());
+        factura.setEmail_envio(request.getEmail_envio());
+        return facturaRepository.save(factura);
     }
 
     @Override
     @Transactional
     public void eliminar(int id) {
-        if (!clienteRepository.existsById(id))
-            throw new RuntimeException("Cliente no encontrado con id: " + id);
-        clienteRepository.deleteById(id);
+        if (!facturaRepository.existsById(id))
+            throw new RuntimeException("Factura no encontrada con id: " + id);
+        facturaRepository.deleteById(id);
     }
 
-    private ClienteDTO.Response mapToResponse(Cliente c) {
-        return new ClienteDTO.Response();
+    @Override
+    public List<Factura> getFacturas() {
+        return facturaRepository.findAll();
     }
 
+    @Override
+    public int saveFactura(Factura factura) {
+        return facturaRepository.save(factura).getId_factura();
+    }
+
+    @Override
+    public Factura getFactura(int id_factura) {
+        return facturaRepository.findById(id_factura)
+                .orElseThrow(() -> new RuntimeException("Factura no encontrada con id: " + id_factura));
+    }
+
+    @Override
+    public int deleteFactura(int id_factura) {
+        if (!facturaRepository.existsById(id_factura)) {
+            return 0;
+        }
+        facturaRepository.deleteById(id_factura);
+        return 1;
+    }
 }
