@@ -24,5 +24,9 @@ public class CuponDescuento {
     private int descuento_monto;
     private Date fecha_expiracion;
     private boolean activo;
+    public void setId(int i) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setId'");
+    }
 
 }

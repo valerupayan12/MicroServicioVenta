@@ -27,5 +27,9 @@ public class Tienda {
     private int comuna;
     @Column(name="id_region", nullable=false)
     private int region;
+    public void setId(int i) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setId'");
+    }
 
 }

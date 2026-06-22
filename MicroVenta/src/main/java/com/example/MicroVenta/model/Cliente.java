@@ -34,5 +34,9 @@ public class Cliente {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getId'");
     }
+    public void setId(int i) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setId'");
+    }
 
 }
