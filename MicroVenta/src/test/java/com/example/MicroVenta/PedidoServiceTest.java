@@ -1,87 +1,124 @@
 package com.example.MicroVenta;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.doNothing;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import com.example.MicroVenta.model.Pedido;
 import com.example.MicroVenta.repository.PedidoRepository;
 import com.example.MicroVenta.service.PedidoService;
 
+
 @SpringBootTest
-public class PedidoServiceTest<Pedido>  {
+public class PedidoServiceTest {
 
-    // Inyecta el servicio de Carrera para ser probado.
     @Autowired
-    private PedidoService PedidoService;
+    private PedidoService pedidoService;
 
-    // Crea un mock del repositorio de Carrera para simular su comportamiento.
-    @Mock
+    @MockitoBean
     private PedidoRepository pedidoRepository;
 
+    // OBTENER PEDIDOS
     @Test
-    public void testFindAll() {
-        // Define el comportamiento del mock: cuando se llame a findAll(), devuelve una lista con una Carrera.
-        when(pedidoRepository.findAll()).thenReturn(List.of(new Pedido("1", "Ingeniería")));
+    public void testGetPedidos() {
+        Pedido pedido = new Pedido();
+        pedido.setId_pedido(1);
+        pedido.setEstado(true);
+        when(pedidoRepository.obtenerPedidos()).thenReturn(List.of(pedido));
 
-        // Llama al método findAll() del servicio.
-        List<Pedido> pedidos = PedidoService.findAll();
+        List<Pedido> pedidos = pedidoService.getPedidos();
 
-        // Verifica que la lista devuelta no sea nula y contenga exactamente una Carrera.
         assertNotNull(pedidos);
         assertEquals(1, pedidos.size());
     }
 
+    // BUSCAR PEDIDO (existe)
     @Test
-    public void testFindByCodigo() {
-        String codigo = "1";
-        Pedido pedido = new Pedido(codigo, "Ingeniería");
+    public void testGetPedido() {
+        int id = 1;
+        Pedido pedido = new Pedido();
+        pedido.setId_pedido(id);
+        pedido.setEstado(true);
+        when(pedidoRepository.buscarPedido(id)).thenReturn(pedido);
 
-        // Define el comportamiento del mock: cuando se llame a findById() con "1", devuelve una Carrera opcional.
-        when(pedidoRepository.findById(codigo)).thenReturn(Optional.of(pedido));
+        Pedido encontrado = pedidoService.getPedido(id);
 
-        // Llama al método findByCodigo() del servicio.
-        Pedido found = PedidoService.findByCodigo(codigo);
-
-        // Verifica que la Carrera devuelta no sea nula y que su código coincida con el código esperado.
-        assertNotNull(found);
-        assertEquals(codigo, ((Object) found).getCodigo());
+        assertNotNull(encontrado);
+        assertTrue(encontrado.isEstado());
     }
 
+    // BUSCAR PEDIDO (no existe)
     @Test
-    public void testSave() {
-        Pedido pedido = new Pedido("1", "Ingeniería");
+    public void testGetPedido_noExiste() {
+        int id = 99;
+        when(pedidoRepository.buscarPedido(id)).thenReturn(null);
 
-        // Define el comportamiento del mock: cuando se llame a save(), devuelve la Carrera proporcionada.
+        Pedido resultado = pedidoService.getPedido(id);
+
+        assertNotNull(resultado); // nunca null, por el "return new Pedido()"
+        assertEquals(0, resultado.getId_pedido());
+    }
+
+    // CREAR PEDIDO
+    @Test
+    public void testSavePedido() {
+        Pedido pedido = new Pedido();
+        pedido.setId_pedido(1);
+        pedido.setEstado(false);
         when(pedidoRepository.save(pedido)).thenReturn(pedido);
 
-        // Llama al método save() del servicio.
-        Pedido saved = PedidoService.save(pedido        );
+        Pedido creado = pedidoService.savePedido(pedido);
 
-        // Verifica que la Carrera guardada no sea nula y que su nombre coincida con el nombre esperado.
-        assertNotNull(saved);
-        assertEquals("Ingeniería", saved.getNombre());
+        assertNotNull(creado);
+        assertFalse(creado.isEstado());
     }
 
+    // ACTUALIZAR PEDIDO
     @Test
-    public void testDeleteByCodigo() {
-        String codigo = "1";
+    public void testUpdatePedido() {
+        Pedido pedido = new Pedido();
+        pedido.setId_pedido(1);
+        pedido.setEstado(true);
+        when(pedidoRepository.save(pedido)).thenReturn(pedido);
 
-        // Define el comportamiento del mock: cuando se llame a deleteById(), no hace nada.
-        doNothing().when(pedidoRepository).deleteById(codigo);
+        int resultado = pedidoService.updatePedido(pedido);
 
-        // Llama al método deleteByCodigo() del servicio.
-        PedidoService.deleteByCodigo(codigo);
-
-        // Verifica que el método deleteById() del repositorio se haya llamado exactamente una vez con el código proporcionado.
-        verify(pedidoRepository, times(1)).deleteById(codigo);
+        assertEquals(1, resultado);
+        verify(pedidoRepository).save(pedido);
     }
 
+    // ELIMINAR PEDIDO (no existe)
+    @Test
+    public void testDeletePedido() {
+        int id = 1;
+        when(pedidoRepository.existsById(id)).thenReturn(false);
+
+        int resultado = pedidoService.deletePedido(id);
+
+        assertEquals(0, resultado);
+        verify(pedidoRepository, never()).deleteById(id);
+    }
+
+    // ELIMINAR PEDIDO (existe)
+    @Test
+    public void testDeletePedido_existe() {
+        int id = 1;
+        when(pedidoRepository.existsById(id)).thenReturn(true);
+
+        int resultado = pedidoService.deletePedido(id);
+
+        assertEquals(1, resultado);
+        verify(pedidoRepository).deleteById(id);
+    }
 }

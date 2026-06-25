@@ -3,8 +3,7 @@ package com.example.MicroVenta.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "cliente")//nombre de la tabla en la base de dstos
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor 
 
 public class Cliente {
     @Id
@@ -31,12 +30,7 @@ public class Cliente {
     @Column(name="id_genero", nullable=false)
     private int genero;
     public int getId() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getId'");
-    }
-    public void setId(int i) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setId'");
+        return id_cliente;
     }
 
 }
