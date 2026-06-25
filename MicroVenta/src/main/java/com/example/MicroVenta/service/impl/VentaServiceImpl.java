@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.MicroVenta.dto.VentaDTO;
-import com.example.MicroVenta.dto.VentaDTO.Response;
 import com.example.MicroVenta.model.Venta;
 import com.example.MicroVenta.repository.VentaRepository;
 import com.example.MicroVenta.service.VentaService;

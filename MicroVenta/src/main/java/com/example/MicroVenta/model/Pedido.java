@@ -33,9 +33,4 @@ public class Pedido {
     private CuponDescuento cupondescuento;
     @Column(name="fecha_pedido", nullable=false)
     private Date fecha_pedido;
-    public void setId(int i) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setId'");
-    }
-
 }

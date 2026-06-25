@@ -3,11 +3,13 @@ package com.example.MicroVenta.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.example.MicroVenta.model.Pedido;
 import com.example.MicroVenta.repository.PedidoRepository;
 import com.example.MicroVenta.service.PedidoService;
 
+@Service
 public class PedidoServiceimpl implements PedidoService {
     
     @Autowired

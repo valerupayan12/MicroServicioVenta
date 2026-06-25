@@ -4,8 +4,6 @@ import java.util.List;
 
 import com.example.MicroVenta.model.Factura;
 
-import jakarta.validation.Valid;
-
 public interface FacturaService {
     List<Factura> listarTodos();
     Factura buscarPorId(int id);
