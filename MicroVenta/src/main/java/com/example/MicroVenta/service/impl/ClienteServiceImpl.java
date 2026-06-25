@@ -7,9 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.example.MicroVenta.model.Cliente;
 import com.example.MicroVenta.repository.ClienteRepository;
 import com.example.MicroVenta.service.ClienteService;
+import org.springframework.stereotype.Service;
 
-public class ClienteServiceImpl implements ClienteService{
-    
+@Service  
+public class ClienteServiceImpl implements ClienteService {
     @Autowired
     private ClienteRepository clienteRepository;
 

@@ -4,10 +4,6 @@ import java.util.List;
 
 import com.example.MicroVenta.model.CuponDescuento;
 
-import jakarta.validation.Valid;
-
-
-
 public interface CuponDescuentoService {
     List<CuponDescuento> listarTodos();
     CuponDescuento buscarPorId(int id);

@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.MicroVenta.dto.ClienteDTO;
 import com.example.MicroVenta.model.CuponDescuento;
 import com.example.MicroVenta.service.CuponDescuentoService;
 

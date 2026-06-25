@@ -11,30 +11,30 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.MicroVenta.model.Pedido;
 import com.example.MicroVenta.repository.PedidoRepository;
-import com.example.MicroVenta.service.PedidoService;
+import com.example.MicroVenta.service.impl.PedidoServiceimpl;
 
-
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class PedidoServiceTest {
 
-    @Autowired
-    private PedidoService pedidoService;
-
-    @MockitoBean
+    @Mock
     private PedidoRepository pedidoRepository;
 
-    // OBTENER PEDIDOS
+    @InjectMocks
+    private PedidoServiceimpl pedidoService;
+
     @Test
     public void testGetPedidos() {
         Pedido pedido = new Pedido();
         pedido.setId_pedido(1);
         pedido.setEstado(true);
+
         when(pedidoRepository.obtenerPedidos()).thenReturn(List.of(pedido));
 
         List<Pedido> pedidos = pedidoService.getPedidos();
@@ -43,13 +43,13 @@ public class PedidoServiceTest {
         assertEquals(1, pedidos.size());
     }
 
-    // BUSCAR PEDIDO (existe)
     @Test
-    public void testGetPedido() {
+    public void testGetPedido_existe() {
         int id = 1;
         Pedido pedido = new Pedido();
         pedido.setId_pedido(id);
         pedido.setEstado(true);
+
         when(pedidoRepository.buscarPedido(id)).thenReturn(pedido);
 
         Pedido encontrado = pedidoService.getPedido(id);
@@ -58,24 +58,25 @@ public class PedidoServiceTest {
         assertTrue(encontrado.isEstado());
     }
 
-    // BUSCAR PEDIDO (no existe)
     @Test
     public void testGetPedido_noExiste() {
         int id = 99;
+
         when(pedidoRepository.buscarPedido(id)).thenReturn(null);
 
         Pedido resultado = pedidoService.getPedido(id);
 
-        assertNotNull(resultado); // nunca null, por el "return new Pedido()"
+        // La implementación retorna new Pedido() cuando no encuentra
+        assertNotNull(resultado);
         assertEquals(0, resultado.getId_pedido());
     }
 
-    // CREAR PEDIDO
     @Test
     public void testSavePedido() {
         Pedido pedido = new Pedido();
         pedido.setId_pedido(1);
         pedido.setEstado(false);
+
         when(pedidoRepository.save(pedido)).thenReturn(pedido);
 
         Pedido creado = pedidoService.savePedido(pedido);
@@ -84,12 +85,12 @@ public class PedidoServiceTest {
         assertFalse(creado.isEstado());
     }
 
-    // ACTUALIZAR PEDIDO
     @Test
     public void testUpdatePedido() {
         Pedido pedido = new Pedido();
         pedido.setId_pedido(1);
         pedido.setEstado(true);
+
         when(pedidoRepository.save(pedido)).thenReturn(pedido);
 
         int resultado = pedidoService.updatePedido(pedido);
@@ -98,10 +99,10 @@ public class PedidoServiceTest {
         verify(pedidoRepository).save(pedido);
     }
 
-    // ELIMINAR PEDIDO (no existe)
     @Test
-    public void testDeletePedido() {
-        int id = 1;
+    public void testDeletePedido_noExiste() {
+        int id = 99;
+
         when(pedidoRepository.existsById(id)).thenReturn(false);
 
         int resultado = pedidoService.deletePedido(id);
@@ -110,10 +111,10 @@ public class PedidoServiceTest {
         verify(pedidoRepository, never()).deleteById(id);
     }
 
-    // ELIMINAR PEDIDO (existe)
     @Test
     public void testDeletePedido_existe() {
         int id = 1;
+
         when(pedidoRepository.existsById(id)).thenReturn(true);
 
         int resultado = pedidoService.deletePedido(id);

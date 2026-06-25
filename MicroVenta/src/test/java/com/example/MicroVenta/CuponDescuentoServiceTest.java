@@ -2,88 +2,168 @@ package com.example.MicroVenta;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.example.MicroVenta.contoller.CuponDescuentoController;
 import com.example.MicroVenta.model.CuponDescuento;
 import com.example.MicroVenta.repository.CuponDescuentoRepository;
-import com.example.MicroVenta.service.CuponDescuentoService;
+import com.example.MicroVenta.service.impl.CuponDescuentoServiceimpl;
 
-@SpringBootTest
-
+@ExtendWith(MockitoExtension.class)
 public class CuponDescuentoServiceTest {
 
-    // Inyecta el servicio de Carrera para ser probado.
-    @Autowired
-    private CuponDescuentoService cuponDescuentoService;
-
-    // Crea un mock del repositorio de Carrera para simular su comportamiento.
     @Mock
     private CuponDescuentoRepository cuponDescuentoRepository;
 
+    @InjectMocks
+    private CuponDescuentoServiceimpl cuponDescuentoService;
+
+    //lISTAR TODOS LOS CUPONES
     @Test
-    public void testFindAll() {
-        // Define el comportamiento del mock: cuando se llame a findAll(), devuelve una lista con una Carrera.
-        when(cuponDescuentoRepository.findAll()).thenReturn(List.of(new CuponDescuento("1", 10.0)));
+    public void testListarTodos() {
+        CuponDescuento cupon = new CuponDescuento(1, 100, 10, 0, Date.valueOf("2025-12-31"), true);
 
-        // Llama al método findAll() del servicio.
-        List<CuponDescuentoController> cupones = cuponDescuentoService.findAll();
+        when(cuponDescuentoRepository.findAll()).thenReturn(List.of(cupon));
 
-        // Verifica que la lista devuelta no sea nula y contenga exactamente una Carrera.
+        List<CuponDescuento> cupones = cuponDescuentoService.listarTodos();
+
+        assertNotNull(cupones);
+        assertEquals(1, cupones.size());
+        assertEquals(100, cupones.get(0).getCodigo());
+    }
+
+    //BUSCAR CUPON POR ID (existe)
+    @Test
+    public void testBuscarPorId_encontrado() {
+        int id = 1;
+        CuponDescuento cupon = new CuponDescuento(id, 200, 15, 0, Date.valueOf("2025-12-31"), true);
+
+        when(cuponDescuentoRepository.findById(id)).thenReturn(Optional.of(cupon));
+
+        CuponDescuento found = cuponDescuentoService.buscarPorId(id);
+
+        assertNotNull(found);
+        assertEquals(200, found.getCodigo());
+    }
+
+    //BUSCAR CUPON POR ID (no existe)
+    @Test
+    public void testBuscarPorId_noEncontrado() {
+        int id = 99;
+
+        when(cuponDescuentoRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> cuponDescuentoService.buscarPorId(id));
+    }
+
+    //CREAR CUPON
+    @Test
+    public void testCrear() {
+        CuponDescuento cupon = new CuponDescuento(1, 300, 20, 500, Date.valueOf("2025-12-31"), true);
+
+        when(cuponDescuentoRepository.save(cupon)).thenReturn(cupon);
+
+        CuponDescuento saved = cuponDescuentoService.crear(cupon);
+
+        assertNotNull(saved);
+        assertEquals(300, saved.getCodigo());
+        assertEquals(20, saved.getDescuento_pct());
+    }
+
+    //ACTUALIZAR CUPON
+    @Test
+    public void testActualizar() {
+        int id = 1;
+        CuponDescuento existente = new CuponDescuento(id, 100, 10, 0, Date.valueOf("2025-12-31"), true);
+        CuponDescuento request  = new CuponDescuento(id, 999, 25, 1000, Date.valueOf("2026-06-30"), false);
+
+        when(cuponDescuentoRepository.findById(id)).thenReturn(Optional.of(existente));
+        when(cuponDescuentoRepository.save(existente)).thenReturn(existente);
+
+        CuponDescuento updated = cuponDescuentoService.actualizar(id, request);
+
+        assertNotNull(updated);
+        assertEquals(999, updated.getCodigo());
+        assertEquals(25, updated.getDescuento_pct());
+        assertEquals(1000, updated.getDescuento_monto());
+    }
+
+
+    //ELIMINAR CUPON (existe)
+    @Test
+    public void testEliminar_encontrado() {
+        int id = 1;
+
+        when(cuponDescuentoRepository.existsById(id)).thenReturn(true);
+        doNothing().when(cuponDescuentoRepository).deleteById(id);
+
+        cuponDescuentoService.eliminar(id);
+
+        verify(cuponDescuentoRepository, times(1)).existsById(id);
+        verify(cuponDescuentoRepository, times(1)).deleteById(id);
+    }
+
+    //ELIMINAR CUPON (no existe)
+    @Test
+    public void testEliminar_noEncontrado() {
+        int id = 99;
+
+        when(cuponDescuentoRepository.existsById(id)).thenReturn(false);
+
+        assertThrows(RuntimeException.class, () -> cuponDescuentoService.eliminar(id));
+    }
+
+    //LISTAR TODOS LOS CUPONES
+
+    @Test
+    public void testGetAllCupones() {
+        CuponDescuento cupon = new CuponDescuento(1, 100, 10, 0, Date.valueOf("2025-12-31"), true);
+
+        when(cuponDescuentoRepository.findAll()).thenReturn(List.of(cupon));
+
+        List<CuponDescuento> cupones = cuponDescuentoService.getAllCupones();
+
         assertNotNull(cupones);
         assertEquals(1, cupones.size());
     }
 
+    //BUSCAR CUPON POR ID (existe)
+
     @Test
-    public void testFindByCodigo() {
-        String codigo = "1";
-        CuponDescuento cupon = new CuponDescuento(codigo, 10.0);
+    public void testBuscarCuponDescuento_encontrado() {
+        int id = 1;
 
-        // Define el comportamiento del mock: cuando se llame a findById() con "1", devuelve una Carrera opcional.
-        when(cuponDescuentoRepository.findById(codigo)).thenReturn(Optional.of(cupon));
+        when(cuponDescuentoRepository.existsById(id)).thenReturn(true);
+        doNothing().when(cuponDescuentoRepository).deleteById(id);
 
-        // Llama al método findByCodigo() del servicio.
-        CuponDescuento found = cuponDescuentoService.findByCodigo(codigo);
+        int result = cuponDescuentoService.deleteCuponDescuento(id);
 
-        // Verifica que la Carrera devuelta no sea nula y que su código coincida con el código esperado.
-        assertNotNull(found);
-        assertEquals(codigo, found.getCodigo());
+        assertEquals(1, result);
+        verify(cuponDescuentoRepository, times(1)).deleteById(id);
     }
 
+    //BUSCAR CUPON POR ID (no existe)
     @Test
-    public void testSave() {
-        CuponDescuento cupon = new CuponDescuento("1", 10.0);
+    public void testDeleteCuponDescuento_noEncontrado() {
+        int id = 99;
 
-        // Define el comportamiento del mock: cuando se llame a save(), devuelve la Carrera proporcionada.
-        when(cuponDescuentoRepository.save(cupon)).thenReturn(cupon);
+        when(cuponDescuentoRepository.existsById(id)).thenReturn(false);
 
-        // Llama al método save() del servicio.
-        CuponDescuento saved = cuponDescuentoService.save(cupon);
+        int result = cuponDescuentoService.deleteCuponDescuento(id);
 
-        // Verifica que la Carrera guardada no sea nula y que su nombre coincida con el nombre esperado.
-        assertNotNull(saved);
-        assertEquals(10.0, saved.getDescuento(), 0.01);
-    }
-
-    @Test
-    public void testDeleteByCodigo() {
-        String codigo = "1";
-
-        // Define el comportamiento del mock: cuando se llame a deleteById(), no hace nada.
-        doNothing().when(cuponDescuentoRepository).deleteById(codigo);
-
-        // Llama al método deleteByCodigo() del servicio.
-        cuponDescuentoService.deleteByCodigo(codigo);
-
-        // Verifica que el método deleteById() del repositorio se haya llamado exactamente una vez con el código proporcionado.
-        verify(cuponDescuentoRepository, times(1)).deleteById(codigo);
+        assertEquals(0, result);
     }
 }

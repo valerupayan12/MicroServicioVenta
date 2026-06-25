@@ -1,10 +1,10 @@
 package com.example.MicroVenta;
 
+import java.sql.Date;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
-import javax.management.loading.ClassLoaderRepository;
-
-import org.hibernate.mapping.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -23,74 +23,91 @@ import com.example.MicroVenta.repository.VentaRepository;
 
 @Profile("dev")
 @Component
-public class DataLoader implements CommandLineRunner{
+public class DataLoader implements CommandLineRunner {
 
-    @Autowired
-    private ClienteRepository clienteRepository;
-    @Autowired
-    private VentaRepository ventarepository;
-    @Autowired
-    private PedidoRepository pedidoRepository;
-    @Autowired
-    private CuponDescuentoRepository cuponDescuentoRepository;
-    @Autowired
-    private TiendaRepository tiendaRepository;
+    @Autowired private ClienteRepository clienteRepository;
+    @Autowired private VentaRepository ventarepository;
+    @Autowired private PedidoRepository pedidoRepository;
+    @Autowired private CuponDescuentoRepository cuponDescuentoRepository;
+    @Autowired private TiendaRepository tiendaRepository;
 
     @Override
     public void run(String... args) throws Exception {
-        Faker faker = new Faker();
+        com.github.javafaker.Faker faker = new com.github.javafaker.Faker();
         Random random = new Random();
 
-        // Generar pedidos
-        for (int i = 0; i < 10; i++) {
-            Pedido pedido = new Pedido();
-            pedido.setId(i + 1);
-            pedido.setFecha(faker.date().past(30, TimeUnit.DAYS));
-            pedido.setTotal(faker.number().randomDouble(2, 10, 100));
-            pedidoRepository.save(pedido);
-        }
-        // Generar ventas
-        for (int i = 0; i < 5; i++) {
-            Venta venta = new Venta();
-            venta.setCodigo(faker.code().asin());
-            venta.setNombre(faker.educator().course());
-            ventarepository.save(venta);
-        }
-
-        List<Venta> ventas = ventarepository.findAll();
-
-        // Generar CUPONDESCUENTO
-        for (int i = 0; i < 50; i++) {
-            CuponDescuento cupon = new CuponDescuento();
-            cupon.setId(i + 1);
-            cupon.setCodigo(faker.code().asin());
-            cupon.setDescripcion(faker.lorem().sentence());
-            cupon.setDescuento(faker.number().randomDouble(2, 0, 1));
-            cuponDescuentoRepository.save(cupon);
-        }
-
-        // Generar CLIEWNTES
+        // 1. Generar Clientes
         for (int i = 0; i < 20; i++) {
-            Cliente cliente = new Cliente();
-            cliente.setId(i + 1);
-            cliente.setNombre(faker.name().fullName());
-            cliente.setEmail(faker.internet().emailAddress());
-            cliente.setTelefono(faker.phoneNumber().cellPhone());
+            Cliente cliente = new Cliente(
+                i + 1,
+                faker.name().fullName(),
+                faker.internet().emailAddress(),
+                faker.phoneNumber().cellPhone(),
+                random.nextInt(10) + 1,       // comuna (int)
+                faker.address().fullAddress(), // direccion_envio
+                random.nextInt(3) + 1          // genero (int)
+            );
             clienteRepository.save(cliente);
         }
 
+        // 2. Generar Tiendas
+        for (int i = 0; i < 10; i++) {
+            Tienda tienda = new Tienda(
+                i + 1,
+                faker.company().name(),
+                faker.address().fullAddress(),
+                random.nextInt(10) + 1,  // comuna (int)
+                random.nextInt(5) + 1    // region (int)
+            );
+            tiendaRepository.save(tienda);
+        }
+
+        // 3. Generar CuponesDescuento
+        for (int i = 0; i < 50; i++) {
+            CuponDescuento cupon = new CuponDescuento(
+                i + 1,
+                random.nextInt(9000) + 1000,               // codigo (int)
+                random.nextInt(50),                         // descuento_pct (int)
+                random.nextInt(5000),                       // descuento_monto (int)
+                Date.valueOf("2025-12-31"),                 // fecha_expiracion
+                true                                        // activo
+            );
+            cuponDescuentoRepository.save(cupon);
+        }
+
+        // 4. Cargar listas para relaciones
         List<Cliente> clientes = clienteRepository.findAll();
         List<Tienda> tiendas = tiendaRepository.findAll();
+        List<CuponDescuento> cupones = cuponDescuentoRepository.findAll();
 
-        // Generar tiendas
+        // 5. Generar Pedidos
+        for (int i = 0; i < 10; i++) {
+            Pedido pedido = new Pedido(
+                i + 1,
+                clientes.get(random.nextInt(clientes.size())),
+                tiendas.get(random.nextInt(tiendas.size())),
+                true,
+                cupones.get(random.nextInt(cupones.size())),
+                new Date(faker.date().past(30, TimeUnit.DAYS).getTime())
+            );
+            pedidoRepository.save(pedido);
+        }
+
+        // 6. Generar Ventas
+        List<Pedido> pedidos = pedidoRepository.findAll();
+
         for (int i = 0; i < 20; i++) {
-            Tienda tienda = new Tienda();
-            tienda.setId(i + 1);
-            tienda.setNombre(faker.company().name());
-            tienda.setDireccion(faker.address().fullAddress());
-            tienda.setTelefono(faker.phoneNumber().cellPhone());
-            tiendaRepository.save(tienda);
+            Venta venta = new Venta(
+                i + 1,
+                pedidos.get(random.nextInt(pedidos.size())),
+                tiendas.get(random.nextInt(tiendas.size())),
+                clientes.get(random.nextInt(clientes.size())),
+                new Date(faker.date().past(30, TimeUnit.DAYS).getTime()),
+                random.nextInt(100000) + 1000,  // total_neto (int)
+                random.nextInt(5000),            // descuento_aplicado (int)
+                faker.options().option("boleta", "factura") // tipo_documento
+            );
+            ventarepository.save(venta);
         }
     }
 }
-
