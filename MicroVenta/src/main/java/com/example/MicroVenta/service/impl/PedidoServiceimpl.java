@@ -1,66 +1,30 @@
 package com.example.MicroVenta.service.impl;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.MicroVenta.model.Pedido;
 import com.example.MicroVenta.repository.PedidoRepository;
 import com.example.MicroVenta.service.PedidoService;
 
-import java.util.List;
-
-@Slf4j
-@Service
-@RequiredArgsConstructor
 public class PedidoServiceimpl implements PedidoService {
-
-    private final PedidoRepository pedidoRepository;
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Pedido> listarTodos() {
-        return pedidoRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Pedido buscarPorId(int id) {
-        return pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido no encontrado con id: " + id));
-    }
-
-    @Override
-    @Transactional
-    public Pedido crear(Pedido request) {
-        return pedidoRepository.save(request);
-    }
-
-    @Override
-    @Transactional
-    public Pedido actualizar(int id, Pedido request) {
-        Pedido pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido no encontrado con id: " + id));
-        pedido.setCliente(request.getCliente());
-        pedido.setTienda(request.getTienda());
-        pedido.setFecha_pedido(request.getFecha_pedido());
-        pedido.setCupondescuento(request.getCupondescuento());
-        pedido.setEstado(request.isEstado());
-        return pedidoRepository.save(pedido);
-    }
-
-    @Override
-    @Transactional
-    public void eliminar(int id) {
-        if (!pedidoRepository.existsById(id))
-            throw new RuntimeException("Pedido no encontrado con id: " + id);
-        pedidoRepository.deleteById(id);
-    }
+    
+    @Autowired
+    private PedidoRepository pedidoRepository;
 
     @Override
     public List<Pedido> getPedidos() {
-        return pedidoRepository.findAll();
+        return pedidoRepository.obtenerPedidos();
+    }
+
+    @Override
+    public Pedido getPedido(int id_pedido) {
+        Pedido pedido = pedidoRepository.buscarPedido(id_pedido);
+        if (pedido != null) {
+            return pedido;
+        }
+        return new Pedido();
     }
 
     @Override
@@ -69,10 +33,18 @@ public class PedidoServiceimpl implements PedidoService {
     }
 
     @Override
-    public int savePedido(int id_pedido) {
-        if (!pedidoRepository.existsById(id_pedido)) {
-            throw new RuntimeException("Pedido no encontrado con id: " + id_pedido);
-        }
-        return id_pedido;
+    public int updatePedido(Pedido pedido) {
+        pedidoRepository.save(pedido);
+        return 1;
     }
+
+    @Override
+    public int deletePedido(int id_pedido) {
+        if (pedidoRepository.existsById(id_pedido)) {
+            pedidoRepository.deleteById(id_pedido);
+            return 1;
+        }
+        return 0;
+    }
+
 }

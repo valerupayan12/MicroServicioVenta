@@ -1,79 +1,44 @@
 package com.example.MicroVenta.service.impl;
 
+import java.util.List;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.example.MicroVenta.dto.ClienteDTO;
 import com.example.MicroVenta.model.Cliente;
 import com.example.MicroVenta.repository.ClienteRepository;
 import com.example.MicroVenta.service.ClienteService;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-@Slf4j
-@Service
-@RequiredArgsConstructor
-public class ClienteServiceImpl implements ClienteService {
-
-    private final ClienteRepository clienteRepository;
+public class ClienteServiceImpl implements ClienteService{
+    
+    @Autowired
+    private ClienteRepository clienteRepository;
 
     @Override
-    @Transactional(readOnly = true)
-    public List<ClienteDTO.Response> listarTodos() {
-        return clienteRepository.findAll().stream().map(this::mapToResponse).collect(Collectors.toList());
+    public List<Cliente> obtenerClientes() {
+        return clienteRepository.findAll();
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public ClienteDTO.Response buscarPorId(int id) {
-        Cliente c = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado con id: " + id));
-        return mapToResponse(c);
+    public Cliente buscarCliente(int id_cliente) {
+        return clienteRepository.findById(id_cliente).orElse(new Cliente());
     }
 
     @Override
-    @Transactional
-    public ClienteDTO.Response crear(ClienteDTO.Request request) {
-        if (clienteRepository.existsByEmail(request.getEmail()))
-            throw new RuntimeException("Ya existe un cliente con el email: " + request.getEmail());
-        Cliente c = new Cliente();
-        c.setNombre(request.getNombre());
-        c.setEmail(request.getEmail());
-        c.setTelefono(request.getTelefono());
-        c.setDireccion_envio(request.getDireccion_envio());
-        c.setComuna(request.getId_comuna());
-        c.setGenero(request.getGeneroId());
-        return mapToResponse(clienteRepository.save(c));
+    public Cliente crearCliente(Cliente cliente) {
+        return clienteRepository.save(cliente);
     }
 
     @Override
-    @Transactional
-    public ClienteDTO.Response actualizar(int id, ClienteDTO.Request request) {
-        Cliente c = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado con id: " + id));
-        c.setNombre(request.getNombre());
-        c.setEmail(request.getEmail());
-        c.setTelefono(request.getTelefono());
-        c.setDireccion_envio(request.getDireccion_envio());
-        c.setComuna(request.getId_comuna());
-        c.setGenero(request.getGeneroId());
-        return mapToResponse(clienteRepository.save(c));
+    public Cliente actualizarCliente(Cliente cliente) {
+        return clienteRepository.save(cliente);
     }
 
     @Override
-    @Transactional
-    public void eliminar(int id) {
-        if (!clienteRepository.existsById(id))
-            throw new RuntimeException("Cliente no encontrado con id: " + id);
-        clienteRepository.deleteById(id);
+    public int eliminarCliente(int id_cliente) {
+        if (clienteRepository.existsById(id_cliente)) {
+            clienteRepository.deleteById(id_cliente);
+            return 1;
+        }
+        return 0;
     }
-
-    private ClienteDTO.Response mapToResponse(Cliente c) {
-        return new ClienteDTO.Response();
-    }
-
 }

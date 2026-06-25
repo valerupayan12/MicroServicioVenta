@@ -1,13 +1,19 @@
 package com.example.MicroVenta.contoller;
 
 
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
-import com.example.MicroVenta.dto.ClienteDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.MicroVenta.model.Cliente;
 import com.example.MicroVenta.service.ClienteService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,63 +21,69 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
-import java.util.List;
 
+
+@SuppressWarnings("unused")
 @RestController
-@Tag(name = "Cliente")
-@RequestMapping("/api/v1/clientes")
-@RequiredArgsConstructor
+@RequestMapping("api/v2/clientes")
 public class ClienteController {
-
-    private final ClienteService clienteService;
+    @Autowired
+    private ClienteService clienteService;
 
     @GetMapping
-    @Operation(summary = "Obtener Clientes",description = "Obtener lista de clientes")
-    public ResponseEntity<List<ClienteDTO.Response>> listarTodos() {
-        return ResponseEntity.ok(clienteService.listarTodos());
+    @Operation(summary = "Obtener clientes", description = "Obtener lista de clientes")
+    public List<Cliente> listarClientes() {
+        return clienteService.obtenerClientes();
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Buscar Cliente",description = "Busca cliente por ID")
-    public ResponseEntity<ClienteDTO.Response> buscarPorId(@PathVariable int id) {
-        return ResponseEntity.ok(clienteService.buscarPorId(id));
-    }
-
+    //agregar
     @PostMapping
-    @Operation(summary = "Registrar Cliente",description = "Registra cliente existente")
+    @Operation(summary = "Registrar cliente",description = "Registra cliente existente")
         @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "cliente registrado exitosamente",
+            @ApiResponse(responseCode = "200", description = "cliente registrada exitosamente",
                 content = @Content(mediaType = "application/JSON",
-                    schema = @Schema(implementation = ClienteDTO.Response.class))),
+                    schema = @Schema(implementation = Cliente.class))),
             @ApiResponse(responseCode = "404",description = "cliente no encontrado")
         })
-    public ResponseEntity<ClienteDTO.Response> crear(@Valid @RequestBody ClienteDTO.Request request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(clienteService.crear(request));
+    public Cliente agregarCliente(@Valid @RequestBody Cliente cliente){
+        return clienteService.crearCliente(cliente);
+
+    }
+    //buscar
+    @GetMapping("{id_cliente}")
+    @Operation(summary = "Obtener cliente por ID", description = "Obtener cliente por ID")
+    public Cliente buscarCliente(@PathVariable("id_cliente") int id_cliente) {
+        return clienteService.buscarCliente(id_cliente);
     }
 
-    @PutMapping("/{id}")
+    //actualizar
+    @PutMapping("{id_cliente}")
     @Operation(summary = "Actualizar Cliente",description = "Actualiza cliente existente")
-        @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "cliente actualizado exitosamente",
-                content = @Content(mediaType = "application/JSON",
-                    schema = @Schema(implementation = ClienteDTO.Response.class))),
-            @ApiResponse(responseCode = "404",description = "cliente no encontrado")
-        })
-    public ResponseEntity<ClienteDTO.Response> actualizar(@PathVariable int id, @Valid @RequestBody ClienteDTO.Request request) {
-        return ResponseEntity.ok(clienteService.actualizar(id, request));
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "cliente actualizado exitosamente",
+            content = @Content(mediaType = "application/JSON",
+                schema = @Schema(implementation = Cliente.class))),
+        @ApiResponse(responseCode = "404",description = "cliente no encontrado")
+    })
+    public Cliente actualizarCliente(@PathVariable("id_cliente") int id_cliente, @Valid @RequestBody Cliente cliente) {
+        cliente.setId_cliente(id_cliente);
+        return clienteService.actualizarCliente(cliente);
     }
 
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Eliminar Cliente",description = "Elimina cliente por ID")
-        @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "cliente eliminado exitosamente"),
-            @ApiResponse(responseCode = "404",description = "cliente no encontrado")
-        })
-    public ResponseEntity<Void> eliminar(@PathVariable int id) {
-        clienteService.eliminar(id);
-        return ResponseEntity.noContent().build();
+    //eliminar
+    @DeleteMapping("{id_cliente}")
+     @Operation(summary = "Eliminar cliente",description = "Elimina cliente por id")
+    @ApiResponses(value  = {
+        @ApiResponse(responseCode = "200", description = "cliente eliminado exitosamente"),
+        @ApiResponse(responseCode = "404",description = "cliente no encontrado")
+    })
+    public String eliminarCliente(@PathVariable("id_cliente") int id_cliente) {
+        if (clienteService.eliminarCliente(id_cliente) == 1) {
+            return "Cliente eliminado correctamente";
+        }
+        return "Error al eliminar el cliente";
     }
 
 }
