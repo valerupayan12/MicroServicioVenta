@@ -67,8 +67,9 @@ public class BoletaController {
                     schema = @Schema(implementation = Boleta.class))),
             @ApiResponse(responseCode = "404",description = "boleta no encontrada")
         })
-    public int actualizarBoleta(@PathVariable int id_boleta, @Valid @RequestBody int boleta) {
-        return boletaService.deleteBoleta(boleta);
+    public Boleta actualizarBoleta(@PathVariable int id_boleta, @Valid @RequestBody Boleta boleta) {
+        boleta.setId_cliente(id_boleta);
+        return boletaService.saveBoletas(boleta);
     }
     
     @DeleteMapping("{id_boleta}")
