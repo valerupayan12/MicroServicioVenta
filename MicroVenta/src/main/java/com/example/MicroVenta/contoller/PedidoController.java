@@ -20,11 +20,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @SuppressWarnings("unused")
 @RestController
 @RequestMapping("api/v2/pedidos")
+@Tag(name = "Pedidos", description = "API para la gestión de pedidos")
 public class PedidoController {
     @Autowired
     private PedidoService pedidoService;
